@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CO Draw</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="./style.css" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    </head>
+    <body>
+        
+        <div class="app">
+            <main class="stage">
+                <div id="canvasHost" class="canvas-host">
+                    <canvas id="canvas"></canvas>
+                    <div
+                        id="cursorLayer"
+                        class="cursor-layer"
+                        aria-hidden="true"
+                    ></div>
+                    <div
+                        id="reactionsLayer"
+                        class="reactions-layer"
+                        aria-hidden="true"
+                    ></div>
+                </div>
+            </main>
+
+            <aside class="left-rail" aria-label="Tools">
+                <div class="rail-box">
+                    <button
+                        class="rail-btn is-active pen"
+                        data-tool="brush"
+                        title="Pen"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <!-- Pencil -->
+                            <path
+                                d="M3 21l4-1 12.5-12.5a2.12 2.12 0 10-3-3L4 17l-1 4z"
+                            />
+                            <path d="M15.5 5.5l3 3" />
+                        </svg>
+                    </button>
+                    <button
+                        class="rail-btn eraser"
+                        data-tool="eraser"
+                        title="Eraser"
+                    >
+                        <span
+                            class="mi material-symbols-rounded"
+                            aria-hidden="true"
+                            >ink_eraser</span
+                        >
+                    </button>
+                    <button class="rail-btn hand" data-tool="pan" title="Hand">
+                        <span
+                            class="mi material-symbols-rounded"
+                            aria-hidden="true"
+                            >pan_tool_alt</span
+                        >
+                    </button>
+                    <button
+                        class="rail-btn gear"
+                        id="settingsBtn"
+                        title="Brush settings"
+                    >
+                        <span
+                            class="mi material-symbols-rounded"
+                            aria-hidden="true"
+                            >settings</span
+                        >
+                    </button>
+                    <div
+                        class="subrail settings-popover"
+                        id="brushSubrail"
+                        hidden
+                    >
+                        <div class="slider">
+                            <input
+                                type="range"
+                                id="sizeSlider"
+                                min="1"
+                                max="40"
+                                value="8"
+                                step="1"
+                            />
+                            <label for="sizeSlider" id="sizeLabel">8px</label>
+                        </div>
+                        <input
+                            type="color"
+                            id="colorPicker"
+                            value="#ffffff"
+                            title="Color"
+                        />
+                    </div>
+                    <button
+                        class="rail-btn shapes"
+                        id="shapesBtn"
+                        data-tool="shape"
+                        title="Shapes"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <!-- Shapes icon: square + circle -->
+                            <rect x="3" y="3" width="9" height="9" rx="1.5" />
+                            <circle cx="16.5" cy="16.5" r="4.5" />
+                        </svg>
+                    </button>
+                    <div
+                        class="subrail settings-popover"
+                        id="shapesSubrail"
+                        hidden
+                    >
+                        <div class="shape-row">
+                            <button
+                                class="rail-btn"
+                                data-shape="circle"
+                                title="Circle"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="7" />
+                                </svg>
+                            </button>
+                            <button
+                                class="rail-btn"
+                                data-shape="square"
+                                title="Square"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <rect
+                                        x="5"
+                                        y="5"
+                                        width="14"
+                                        height="14"
+                                        rx="1.5"
+                                    />
+                                </svg>
+                            </button>
+                            <button
+                                class="rail-btn"
+                                data-shape="triangle"
+                                title="Triangle"
+                            >
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 4 L20 20 H4 Z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="rail-btn danger"
+                        id="clearAllBtn"
+                        title="Clear board"
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <!-- Trash -->
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                            <path
+                                d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"
+                            />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                        </svg>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Undo/Redo buttons (kept on top, separated from bottom dock) -->
+            <div class="modifybuttons">
+                <button class="rail-btn" id="topUndoBtn" title="Undo">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <!-- Undo -->
+                        <path d="M9 14L4 9l5-5" />
+                        <path d="M20 20v-4a7 7 0 00-7-7H4" />
+                    </svg>
+                </button>
+                <button class="rail-btn" id="topRedoBtn" title="Redo">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <!-- Redo -->
+                        <path d="M15 14l5-5-5-5" />
+                        <path d="M4 20v-4a7 7 0 017-7h9" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="zoom" aria-label="Zoom Controls">
+                <button id="zoomOut" class="zoom-btn" title="Zoom out">
+                    −
+                </button>
+                <div id="zoomValue" class="zoom-value">100%</div>
+                <button id="zoomIn" class="zoom-btn" title="Zoom in">+</button>
+            </div>
+
+            <div class="top-right" aria-label="Presence and actions">
+                <div class="presence-group">
+                    <button
+                        class="reaction-btn"
+                        id="reactionBtn"
+                        title="Reactions"
+                    >
+                        🙂
+                    </button>
+                    <button
+                        class="users-btn"
+                        id="usersBtn"
+                        title="Online users"
+                    >
+                        👥
+                    </button>
+                </div>
+                <div id="usersDropdown" class="users-dropdown" hidden>
+                    <ul id="userList" class="user-list"></ul>
+                </div>
+                <div id="reactionPalette" class="reaction-palette" hidden>
+                    <button class="emoji">👍</button>
+                    <button class="emoji">❤️</button>
+                    <button class="emoji">🔥</button>
+                    <button class="emoji">🤯</button>
+                    <button class="emoji">🎉</button>
+                    <button class="emoji">👋</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://collaborative-canvas-server.up.railway.app/socket.io/socket.io.js"></script>
+        <script type="module" src="./main.js"></script>
+    </body>
+</html>
