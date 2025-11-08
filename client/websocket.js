@@ -17,7 +17,7 @@ export class RealtimeClient {
         this.handlers = { onInit, onProgress, onCommit, onState, onPresenceJoin, onPresenceLeave, onCursor, onReaction, onShapeProgress };
         const globalIo = (typeof window !== 'undefined') ? window.io : undefined;
         this.socket = globalIo
-            ? globalIo("https://collaborative-canvas-server.up.railway.app", { path: "/socket.io" })
+            ? globalIo("https://codraw-production.up.railway.app", { path: "/socket.io" })
             : createNoopSocket();
         this.bind();
     }

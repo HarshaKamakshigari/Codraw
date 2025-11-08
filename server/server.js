@@ -1,10 +1,3 @@
-// Express + Socket.io server for the collaborative canvas.
-// Responsibilities:
-// - Serve the static client from /client
-// - Manage socket connections and room membership
-// - Validate and fan out drawing operations
-// - Maintain presence and ephemeral events (cursor, progress, reactions)
-
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
@@ -22,7 +15,6 @@ const io = new Server(httpServer, {
     cors: { origin: "*" },
 });
 
-// Serve static assets (works from repo root or when deploying only /server)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const CLIENT_DIR = path.resolve(__dirname, "../client");
