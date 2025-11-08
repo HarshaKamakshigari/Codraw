@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Builds / output
+dist/
+build/
+out/
+.next/
+.cache/
+.parcel-cache/
+.turbo/
+.vercel/
+.netlify/
+
+# Coverage / test
+coverage/
+.nyc_output/
+
+# Environment / local
+.env
+.env.*
+.env.local
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.eslintcache
+
+# Temp
+tmp/
+temp/
+
+
